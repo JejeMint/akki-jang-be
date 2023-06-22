@@ -18,3 +18,8 @@ logging:
   level:
     org.hibernate.sql: debug
     org.hibernate.type: trace
+
+image:
+  dir: https://6cd9-14-39-127-17.ngrok-free.app/image/
+upload:
+  dir: /Users/jaemin/Desktop/workspace/project/akki-jang-be/akkijang/src/test/resources/static/image/
