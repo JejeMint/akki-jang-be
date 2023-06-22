@@ -36,7 +36,7 @@ public class ProductIntegrationTest {
     @Test
     void 상품을_등록한다() throws IOException{
         // given
-        String filePath = "src/test/resources/image/test.png";
+        String filePath = "src/test/resources/static/image/test.png";
         final File file = new File(filePath);
 
         // when
@@ -60,7 +60,7 @@ public class ProductIntegrationTest {
                 .multiPart("price", price)
                 .multiPart("categoryCode", categoryCode)
                 .multiPart("regionCode", regionCode)
-                .when().post("/products")
+                .when().post("/api/products")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract();
