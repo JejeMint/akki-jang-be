@@ -1,8 +1,9 @@
 package jejemint.akkijang.domain;
 
 import javax.persistence.Column;
-import javax.persistence.Convert;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import lombok.AccessLevel;
@@ -24,11 +25,9 @@ public class Product extends BaseTimeEntity{
     private int price;
     private String imageUrl;
 
-    @Convert(converter = CategoryPersistConverter.class)
-    @Column(name = "category_code")
+    @Enumerated(EnumType.STRING)
     private Category category;
-    @Convert(converter = RegionPersistConverter.class)
-    @Column(name = "region_code")
+    @Enumerated(EnumType.STRING)
     private Region region;
 
     private Product(final Long id, final String title, final String content, final int price, final String imageUrl,
