@@ -1,5 +1,6 @@
 package jejemint.akkijang.service;
 
+import java.util.List;
 import jejemint.akkijang.controller.dto.ProductCreateRequestDto;
 import jejemint.akkijang.domain.Category;
 import jejemint.akkijang.domain.Product;
@@ -31,5 +32,9 @@ public class ProductService {
                 category,
                 region);
         return productRepository.save(product);
+    }
+
+    public List<Product> getAllProducts() {
+        return productRepository.findAll();
     }
 }
