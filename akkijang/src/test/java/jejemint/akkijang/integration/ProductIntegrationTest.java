@@ -9,6 +9,7 @@ import io.restassured.response.Response;
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
+import jejemint.akkijang.controller.dto.ProductDetailSelectRequestDto;
 import jejemint.akkijang.controller.dto.ProductSimpleSelectResponseDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -63,6 +64,21 @@ public class ProductIntegrationTest {
         assertThat(selectResponse).hasSize(2);
     }
 
+    @Test
+    void 상품을_단건_조회한다() {
+        // given
+        상품_생성_요청(mockFile, "테스트 제목1", "테스트 내용1", 10_000, "1", "1");
+        final ExtractableResponse<Response> createResponse = 상품_생성_요청(mockFile, "테스트 제목2", "테스트 내용2", 20_000, "2", "2");
+        final Long productId = Long.parseLong(createResponse.header("Location").split("/")[3]);
+
+        // when
+        final ExtractableResponse<Response> response = 상품_단건_조회_요청(productId);
+        final ProductDetailSelectRequestDto selectResponse = response.as(ProductDetailSelectRequestDto.class);
+
+        // then
+        assertThat(selectResponse.getId()).isEqualTo(productId);
+    }
+
     private ExtractableResponse<Response> 상품_생성_요청(final File file,
                                                    final String title,
                                                    final String content,
@@ -86,6 +102,14 @@ public class ProductIntegrationTest {
     private ExtractableResponse<Response> 상품_전체_조회_요청() {
         return given().log().all()
                 .when().get("/api/products")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract();
+    }
+
+    private ExtractableResponse<Response> 상품_단건_조회_요청(final Long productId) {
+        return given().log().all()
+                .when().get("/api/products/{productId}", productId)
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract();
