@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class ProductSimpleSelectResponseDto {
+    private final Long id;
     private final String title;
     private final int price;
     private final String imageUrl;
@@ -16,7 +17,9 @@ public class ProductSimpleSelectResponseDto {
     private final LocalDateTime createdAt;
 
     public static ProductSimpleSelectResponseDto from(Product product) {
-        return new ProductSimpleSelectResponseDto(product.getTitle(),
+        return new ProductSimpleSelectResponseDto(
+                product.getId(),
+                product.getTitle(),
                 product.getPrice(),
                 product.getImageUrl(),
                 product.getRegion().getCode(),
