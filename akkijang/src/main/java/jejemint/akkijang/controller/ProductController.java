@@ -25,7 +25,7 @@ public class ProductController {
     @PostMapping("/products")
     public ResponseEntity<Void> createProduct(@ModelAttribute ProductCreateRequestDto request) {
         final Long savedId = productService.createProduct(request);
-        return ResponseEntity.created(URI.create("/products/" + savedId)).build();
+        return ResponseEntity.created(URI.create("/api/products/" + savedId)).build();
     }
 
     @GetMapping("/products")

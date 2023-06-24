@@ -45,7 +45,7 @@ public class ProductIntegrationTest {
         final ExtractableResponse<Response> response = 상품_생성_요청(mockFile, "테스트 제목", "테스트 내용", 10_000, "1", "1");
 
         // then
-        assertThat(response.header("Location")).contains("/products/");
+        assertThat(response.header("Location")).contains("/api/products/");
     }
 
     @Test
