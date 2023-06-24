@@ -1,13 +1,15 @@
 package jejemint.akkijang.integration;
 
-import static io.restassured.RestAssured.*;
+import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.io.File;
-import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+import jejemint.akkijang.controller.dto.ProductSimpleSelectResponseDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
@@ -28,22 +30,37 @@ public class ProductIntegrationTest {
     @LocalServerPort
     private int port;
 
+    private File mockFile;
+
     @BeforeEach
     void setUp() {
         RestAssured.port = this.port;
+        String filePath = "src/test/resources/static/image/test.png";
+        mockFile = new File(filePath);
     }
 
     @Test
-    void 상품을_등록한다() throws IOException{
-        // given
-        String filePath = "src/test/resources/static/image/test.png";
-        final File file = new File(filePath);
-
+    void 상품을_등록한다() {
         // when
-        final ExtractableResponse<Response> response = 상품_생성_요청(file, "테스트 제목", "테스트 내용", 10_000, "1", "1");
+        final ExtractableResponse<Response> response = 상품_생성_요청(mockFile, "테스트 제목", "테스트 내용", 10_000, "1", "1");
 
         // then
         assertThat(response.header("Location")).contains("/products/");
+    }
+
+    @Test
+    void 상품을_전체_조회한다() {
+        // given
+        상품_생성_요청(mockFile, "테스트 제목1", "테스트 내용1", 10_000, "1", "1");
+        상품_생성_요청(mockFile, "테스트 제목2", "테스트 내용2", 20_000, "2", "2");
+
+        // when
+        final ExtractableResponse<Response> response = 상품_전체_조회_요청();
+        final List<ProductSimpleSelectResponseDto> selectResponse = Arrays.asList(
+                response.as(ProductSimpleSelectResponseDto[].class));
+
+        // then
+        assertThat(selectResponse).hasSize(2);
     }
 
     private ExtractableResponse<Response> 상품_생성_요청(final File file,
@@ -63,6 +80,14 @@ public class ProductIntegrationTest {
                 .when().post("/api/products")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
+                .extract();
+    }
+
+    private ExtractableResponse<Response> 상품_전체_조회_요청() {
+        return given().log().all()
+                .when().get("/api/products")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
                 .extract();
     }
 }
